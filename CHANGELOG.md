@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- N/A
+
 ## [1.0.0] - 2017.04.21-0400
 
 ### Added
@@ -118,3 +120,10 @@ All notable changes to this project will be documented in this file.
 
 - Stop/Start timer depending on if you are currently viewing the giveaway page.
 - Stopped timers from running on non giveaway pages.
+
+## [10.0.2] - 2019.07.20-1109
+
+### Changed
+
+- Updated SteamGifts site max points settings from 300 to 500, old site change but got missed.
+- Updated default max points to reflect the site max points change.

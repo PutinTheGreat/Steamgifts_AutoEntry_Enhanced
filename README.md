@@ -32,3 +32,18 @@ Tested only with Greasemonkey in Firefox. It may not work with other browsers or
 - Exporting settings into a readable format, with line breaks n shieeet!
 - Prepend a numbering column to the wishlist and enable editing the list order by manual input in said column. Just like the steam wishlist .
 - Point stacking. Enter any (longest first) GAs instead hitting the 300p cap. Upon next refresh when finding potential wishlist GAs, leave the parked ones to reclaim the necessary points.
+
+# Authors
+
+- PutinTheGreat
+- - Script: SteamGifts AutoEntry Enhanced
+- - Role: Programmer/Tester
+- - Github: https://github.com/PutinTheGreat/Steamgifts_AutoEntry_Enhanced
+- - Greasy Fork: https://greasyfork.org/en/scripts/29140-steamgifts-auto-entry-enhanced
+- - Email: PutinTheGreatGit@gmail.com
+- steam_gifter
+- - Script: SteamGifts AutoEntry
+- - Role: Programmer/Tester
+- - Github: N/A
+- - Greasy Fork: https://greasyfork.org/en/scripts/5305-steamgifts-auto-entry
+- - Email: N/A

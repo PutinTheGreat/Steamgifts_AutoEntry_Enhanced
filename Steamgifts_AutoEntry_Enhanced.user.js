@@ -2,9 +2,14 @@
 // @name        Steamgifts Auto Entry Enhanced
 // @namespace   Steamgifts Auto Entry Enhanced
 // @description Automatically enters giveaways on steamgifts.com
+// @author      PutinTheGreat
 // @include     http*://*steamgifts.com*
-// @version     10.0.1
+// @version     10.0.2
+// @downloadURL	https://github.com/PutinTheGreat/Steamgifts_AutoEntry_Enhanced/raw/master/Steamgifts_AutoEntry_Enhanced.user.js
+// @updateURL   https://github.com/PutinTheGreat/Steamgifts_AutoEntry_Enhanced/raw/master/Steamgifts_AutoEntry_Enhanced.user.js
+// @homepage    https://github.com/PutinTheGreat/Steamgifts_AutoEntry_Enhanced
 // @grant       none
+// @license     MIT
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     http://code.jquery.com/ui/1.11.4/jquery-ui.min.js
 // @compatible  firefox
@@ -28,9 +33,10 @@ jQuery.fn.centerfixed = function () {
   return this;
 }
 
+var sgSiteMaxPoints = 500;  // Max points capable on SteamGifts site as of (19.07.20)
 var gamelist=[];
 var minpoints=100;
-var maxpoints=280;
+var maxpoints=480;
 //var maxpages=10;  // i used maxpagenum it does same thing
 var enterwishlist=false;
 var entergroup=false;
@@ -502,7 +508,7 @@ function backgroundpageload(pagenum) {
             }
           }
           // we didn't explicitly enter for this giveaway, and it's not blacklisted and our level is ok, save it in the best chance giveaway list
-          else if(maxpoints<300 && levelok==true && isblacklisted==false) {
+          else if(maxpoints<sgSiteMaxPoints && levelok==true && isblacklisted==false) {
             var thisurl=$(this).find('a[href^="/giveaway/"]').attr('href');
             var haveurl=false;
             for(var ei=0; ei<bestchanceentries.length; ei++) {
@@ -561,7 +567,7 @@ function backgroundpageload(pagenum) {
     }
     
     // sort best chance array so best is at the front
-    if(maxpoints<300) {
+    if(maxpoints<sgSiteMaxPoints) {
       bestchanceentries.sort(sortentry);
     }
     
@@ -761,7 +767,7 @@ function createsettingsdiv() {
   outerdivoptions+='<tr><td>Min Points <input type="text" id="autoentryminpoints" pattern="\\d+" style="width:30px; padding:0px;" title="Giveaways will only be entered as long as your points available will remain at or above this number.  This allows you to have a spare pool of points to manually enter giveaways.">';
   outerdivoptions+='</td><td>Default Max Entries <input type="text" id="autoentrymaxentries" pattern="^-?\\d+$" style="width:30px; padding:0px;" title="After adding any game the Max Entries will be set to this default.">';
   outerdivoptions+='</td><td>Max Page Number <input type="text" id="autoentrymaxpagenum" pattern="\\d+" style="width:30px; padding:0px;" title="Sets the maximum number of pages to go thru for giveaways. (Overridden by Min Point Increase Page)">';
-  outerdivoptions+='</td><td>Min Point Increase Page <input type="text" id="autoentryminpointpageincr" pattern="\\d+" style="width:30px; padding:0px;" title="Sets the minimum required points to search beyond the Max Page Number. (Prevents ending up with 300 points. Set to 300 to not use.)">';
+  outerdivoptions+='</td><td>Min Point Increase Page <input type="text" id="autoentryminpointpageincr" pattern="\\d+" style="width:30px; padding:0px;" title="Sets the minimum required points to search beyond the Max Page Number. (Prevents ending up with '+sgSiteMaxPoints+' points. Set to '+sgSiteMaxPoints+' to not use.)">';
   outerdivoptions+='</td></tr>';
   outerdivoptions+='<tr><td>Max Points <input type="text" id="autoentrymaxpoints" pattern="\\d+" style="width:30px; padding:0px;" title="After all your selected games have been entered, this will automatically enter any other games (that are not blacklisted) that have the best chance of winning until the points remaining is less than this value.">';
   outerdivoptions+='</td><td colspan=3>Entry Order : <select id="autoentryordermethod" style="width:auto;padding:1px 1px;" title="The order in which to enter giveaways.  Wishlist and Group giveaways are entered as they are encountered regardless of this setting."><option value="1">Giveaways at top of my game list first</option><option value="2">Giveaways with best chance of winning</option><option value="3">Giveaways ending soonest</option></select>';
@@ -847,7 +853,7 @@ function createhelpdiv() {
   innerdiv.append('If you select enter any wishlist giveaways the games on your wishlist will be entered first, before all other entries if points are available.  This is for ANY game in your wishlist, not just those games you\'ve added to the auto entry list.  Likewise if you select enter group giveaways, the giveaways for groups you are a member of will be entered second, unless you have excluded the game from group giveaways in your auto entry list.  Only after these entries are made will entries for the games in your auto entry list be considered.<br /><br />');
   innerdiv.append('You may also choose to enter any featured giveaways that show up at the top of some pages on the site.  If you don\'t select this option, games that are featured may still be entered if they are matched in your game list, otherwise they will be skipped.<br /><br />');
   innerdiv.append('In the settings page enter the minimum number of points that the auto entry system will leave for you.  The auto entry system will not enter a giveaway if your points available would go below this number.  This will give you a pool of unused points so you can manually enter giveaways that you want.<br /><br />');
-  innerdiv.append('In the settings page also enter a value for the maximum number of points.  If the auto entry system goes through all your games and enters giveaways for everyting it can, and it still has more points left than this value, the system will automatically enter giveaways that have the highest chance of winning until the points fall below this value.  Enter 300 or more to disable this feature.<br /><br />');
+  innerdiv.append('In the settings page also enter a value for the maximum number of points.  If the auto entry system goes through all your games and enters giveaways for everyting it can, and it still has more points left than this value, the system will automatically enter giveaways that have the highest chance of winning until the points fall below this value.  Enter '+sgSiteMaxPoints+' or more to disable this feature.<br /><br />');
   innerdiv.append('You should also configure the maximum number of pages to retrieve in the settings page.  The auto entry system will only look at giveaways on pages up to this number.  This is useful to reserve your points for giveaways ending the soonest in the first few pages of giveaways.<br /><br />');
   innerdiv.append('After you have made any changes in the Settings page, you need to click the Save button to save those changes.<br /><br />');
   innerdiv.append('Enable the auto entry system by clicking the Disabled link under the Auto Entry menu.  When the auto entry system is running the link will change to Enabled.  Clicking it when Enabled will disable it.<br /><br />');
