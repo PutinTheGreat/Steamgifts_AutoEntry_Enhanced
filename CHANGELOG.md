@@ -4,11 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Changed
-
-- Stop/Start timer depending on if you are currently viewing the giveaway page.
-- Stopped timers from running on non giveaway pages.
-
 ## [1.0.0] - 2017.04.21-0400
 
 ### Added
@@ -116,3 +111,10 @@ All notable changes to this project will be documented in this file.
 ### Base Update
 
 - Updated base code version from v24 to v26. This removes the xframe dependency and allow it to run on new browser versions better.
+
+## [10.0.1] - 2019.07.19-2247
+
+### Changed
+
+- Stop/Start timer depending on if you are currently viewing the giveaway page.
+- Stopped timers from running on non giveaway pages.
