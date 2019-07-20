@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Stop/Start timer depending on if you are currently viewing the giveaway page.
+- Stopped timers from running on non giveaway pages.
+
 ## [1.0.0] - 2017.04.21-0400
 
 ### Added

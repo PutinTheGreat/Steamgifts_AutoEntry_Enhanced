@@ -24,6 +24,7 @@ Tested only with Greasemonkey in Firefox. It may not work with other browsers or
 - Add option to enable/disable the addition of the timer updating giveaway times
 - Add option to not enter any DLC giveaways
 - Add option to not enter DLC giveaways that you don't own the game of
+- Change settings window to look like ESG settings page
 
 # Suggestions
 

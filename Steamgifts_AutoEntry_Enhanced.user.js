@@ -3,7 +3,7 @@
 // @namespace   Steamgifts Auto Entry Enhanced
 // @description Automatically enters giveaways on steamgifts.com
 // @include     http*://*steamgifts.com*
-// @version     10
+// @version     10.0.1
 // @grant       none
 // @require     http://code.jquery.com/jquery-2.1.4.min.js
 // @require     http://code.jquery.com/ui/1.11.4/jquery-ui.min.js
@@ -58,18 +58,43 @@ var entrylisterrorcount=0; //for tracking if there are issues with entrylistcoun
 var accountsynctime=0;
 var accountsynctimeupdated=false;
 var ownedgameslist=[];
-var window_focus = true;
 var time_interval = 500;
 var time_min = 0;
+var timer;
+var timerRunning = false;
+var giveawaypage = false;
+var previous_element_sensor_height = 0;
+
+if(location.href.match(/steamgifts.com\/$/) || location.href.match(/steamgifts.com\/giveaways\/search/)) {
+  giveawaypage = true;
+}
 
 $(window).focus(function() {
-  if(window_focus == false) {
-    time_min = 0;
-  }
-  window_focus = true;
+  // gained focus
+  time_min = 0;
+  startTimer();
 }).blur(function() {
-  window_focus = false;
+  // lost focus
+  stopTimer();
 });
+
+function startTimer() {
+  if(!timerRunning && giveawaypage) {
+    timerRunning = true;
+    processTimer();
+  }
+}
+
+function stopTimer() {
+  clearTimeout(timer);
+  timerRunning = false;
+}
+
+function processTimer() {
+  fn_elementsensorheight();
+  fn_process_time();
+  timer = setTimeout(processTimer, time_interval);
+}
 
 function fn_executestorage() {
 {
@@ -828,7 +853,7 @@ function createhelpdiv() {
   innerdiv.append('Enable the auto entry system by clicking the Disabled link under the Auto Entry menu.  When the auto entry system is running the link will change to Enabled.  Clicking it when Enabled will disable it.<br /><br />');
   innerdiv.append('When the auto entry system is enabled it will attempt to enter giveaways for games in your list every 10 minutes.  It will check for giveaways on the first configured number of pages of games as listed on steamgifts.com.<br /><br />');
   innerdiv.append('Only enable the auto entry system in a single browser tab.  Once the system is enabled you should leave that browser tab alone and use another tab if you want to browse steamgifts.com.<br /><br />');
-  innerdiv.append('<div style="width:50%;text-align:center;float:left;">PutinTheGreat - Donations Greatly Appreciated : <br />1Bu3FeUob9GGEuTJVWXGy3gY16Yq6kLojp</div><div style="width:50%;text-align:center;float:right;">Original Creator - Bitcoin Donations Appreciated : <br />1SGiftfrNtDfThSykhB8yDZYTJPHF59hH</div>');
+  innerdiv.append('<div style="width:50%;text-align:center;float:left;">PutinTheGreat - Donations Greatly Appreciated : <br />37xGgYLeQoaJsCdrCjVW89m5oWZxp8tkhf</div><div style="width:50%;text-align:center;float:right;">Original Creator - Bitcoin Donations Appreciated : <br />1SGiftfrNtDfThSykhB8yDZYTJPHF59hH</div>');
   var closebutton=$('<div style="clear:both;"><center><button class="closeModal">Close</button></center><br /></div>');
   outerdiv.append(closebutton);
   
@@ -962,10 +987,6 @@ function decodeEntities(encodedString) {
 }
 
 $(document).ready(function() {
-  var giveawaypage = false;
-  if(location.href.match(/steamgifts.com\/$/) || location.href.match(/steamgifts.com\/giveaways\/search/)) {
-    giveawaypage = true;
-  }
   if($('.nav__left-container').length>0) {
     $('body').append(createsettingsdiv());
     $('body').append(createhelpdiv());
@@ -1121,16 +1142,10 @@ $(document).ready(function() {
     $('.closeModal').click(function() {
       $(this).closest('.modalWindow').slideUp();
     });
-
-    fn_elementsensorheight('.page__outer-wrap', $('.page__outer-wrap').height(), giveawaypage);
   };
   
-  if(giveawaypage == true) {
+  if(giveawaypage) {
     if($('header .nav__right-container .nav__sits').attr('href') != '/?login') {
-      
-      fn_addgametolist();
-      fn_addbuttonsmore();
-      
       var script = document.createElement('script');
       script.appendChild(document.createTextNode(function_process_buttons));
       (document.body || document.head || document.documentElement).appendChild(script);
@@ -1141,10 +1156,9 @@ $(document).ready(function() {
       style.appendChild(document.createTextNode(".featured__container {margin-top: 39px !important;}\nheader {position: fixed;top: 0px;width: 100%;z-index: 99999;}\n.sidebar__button-style {font-size-adjust: .45;height: 18px;line-height: 130%;padding: 0px 4px 0px 4px;margin-bottom: 3px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}\n.sidebar__mpu {height:auto !important;}"));
       (document.body || document.head || document.documentElement).appendChild(style);
     }
-    fn_process_time();
   }
   
-  if(enabledonload == true && giveawaypage == true) {
+  if(enabledonload && giveawaypage) {
     $('#autoentryenabled').click();
   }
   
@@ -1162,16 +1176,14 @@ $(document).ready(function() {
 
 
 ////// START FUNCTIONS TO ADD BUTTONS TO SITE //////
-function fn_elementsensorheight(elementsensor, newprevious_element_sensor_height, newgiveawaypage) {
-  setTimeout(function(){
-    if($(elementsensor).height() - newprevious_element_sensor_height != 0) {
-      fn_addgametolist();
-      if(newgiveawaypage == true) {
-        fn_addbuttonsmore();
-      }
+function fn_elementsensorheight() {
+  if($('.page__outer-wrap').height() - previous_element_sensor_height != 0) {
+    previous_element_sensor_height = $('.page__outer-wrap').height();
+    fn_addgametolist();
+    if(giveawaypage) {
+      fn_addbuttonsmore();
     }
-    fn_elementsensorheight('.page__outer-wrap', newprevious_element_sensor_height, newgiveawaypage);
-  }, 1000); //run time checking
+  }
 }
 
 function fn_addbuttons(v_element) {
@@ -1223,15 +1235,10 @@ function fn_addbuttonsmore() {
 
 ////// START FUNCTIONS TO PROCESS TIME //////
 function fn_process_time() {
-  setTimeout(function(){
-    if(window_focus == true) {
-      if((time_min <= 60 & (time_min*1000) % 1000 == 0) || (time_min <= 3600 && time_min % 60 == 0) || (time_min <= 86400 && time_min % 3600 == 0) || (time_min <= 604800 && time_min % 86400 == 0) || (time_min % 604800 == 0)) {
-        fn_set_time_handler();
-      }
-    }
-    time_min -= time_interval/1000;
-    fn_process_time();
-  }, time_interval); //run time checking
+  if((time_min <= 60 & (time_min*1000) % 1000 == 0) || (time_min <= 3600 && time_min % 60 == 0) || (time_min <= 86400 && time_min % 3600 == 0) || (time_min <= 604800 && time_min % 86400 == 0) || (time_min % 604800 == 0)) {
+    fn_set_time_handler();
+  }
+  time_min -= time_interval/1000;
 }
 
 function fn_set_time_handler() {
